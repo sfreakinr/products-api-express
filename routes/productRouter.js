@@ -182,10 +182,13 @@ router.patch('/:id', async (req, res) => {
 // DELETE a product
 router.delete('/:id', async (req, res) => {
     try {
-        const deletedProduct = await Product.findByIdAndDelete(req.params.id);
+        const { id } = req.params;
+        const deletedProduct = await Product.findByIdAndDelete(id);
+
         if (!deletedProduct) {
             return res.status(404).json({ error: "Product not found!" });
         }
+
         res.status(200).json({ message: "Product deleted successfully!", product: deletedProduct });
     } catch (error) {
         res.status(500).json({ error: "Internal Server Error" });
