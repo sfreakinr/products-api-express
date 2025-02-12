@@ -137,7 +137,7 @@ router.post('/', async (req, res) => {
 
         
         const lastProduct = await Product.findOne().sort({ id: -1 });
-        const newId = lastProduct ? lastProduct.id + 1 : 1; // Start from 1
+        const newId = lastProduct ? lastProduct.id + 1 : 1; 
 
         const newProduct = new Product({ id: newId, name, price });
         await newProduct.save();
@@ -180,10 +180,13 @@ router.patch('/:id', async (req, res) => {
 
 
 // DELETE a product
+
 router.delete('/:id', async (req, res) => {
     try {
-        const { id } = req.params;
-        const deletedProduct = await Product.findByIdAndDelete(id);
+        const productID = parseInt(req.params.id); // Convert to number
+
+        // Find and delete the product using `id`
+        const deletedProduct = await Product.findOneAndDelete({ id: productID });
 
         if (!deletedProduct) {
             return res.status(404).json({ error: "Product not found!" });
@@ -191,9 +194,12 @@ router.delete('/:id', async (req, res) => {
 
         res.status(200).json({ message: "Product deleted successfully!", product: deletedProduct });
     } catch (error) {
+        console.error("Error deleting product:", error);
         res.status(500).json({ error: "Internal Server Error" });
     }
 });
+
+
 
 module.exports = router;
 
